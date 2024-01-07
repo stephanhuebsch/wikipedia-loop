@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+from datetime import datetime
 
 def get_first_valid_link(url, visited):
     response = requests.get(url)
@@ -50,7 +51,8 @@ def main():
     
     # Exporting to a text file
     with open("wikipedia_chain_data.txt", "a") as file:
-        file.write(f"{start_url[30:]}\t{len(visited)}\t{current_url[30:]}\n")
+        date = datetime.now().strftime("%Y-%m-%d")
+        file.write(f"{date}; {start_url[30:]}; {len(visited)}; {current_url[30:]}\n")
 
 if __name__ == "__main__":
     main()

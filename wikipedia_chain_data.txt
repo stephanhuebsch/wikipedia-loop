@@ -1,3 +1,2 @@
-Vienna	8	Candidate
-List_of_cities_in_the_European_Union_by_population_within_city_limits	29	Philosophy
-Federal_states_of_Austria	7	Candidate
+2024-01-07; Austria; 28; Philosophy
+2024-01-07; German_language; 22; Philosophy
