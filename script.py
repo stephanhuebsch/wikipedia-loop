@@ -10,6 +10,10 @@ def get_first_valid_link(url, visited):
     # Find the first paragraph
     p_tags = soup.find_all('p')
     for p in p_tags:
+        if p.find_parent('table'):
+            # Skip paragraphs inside tables
+            continue
+    
         # Find all links within the paragraph
         links = p.find_all('a', href=True)
 

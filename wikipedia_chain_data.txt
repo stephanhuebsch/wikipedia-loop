@@ -1,2 +1,4 @@
 2024-01-07; Austria; 28; Philosophy
 2024-01-07; German_language; 22; Philosophy
+2024-01-07; Vienna; 8; Candidate
+2024-01-07; Vienna; 29; Philosophy
