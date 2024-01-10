@@ -25,6 +25,9 @@ def get_first_valid_link(url, visited):
                 continue
 
             link = a_tag['href']
+            if 'Help:IPA' in link:
+                continue 
+            
             if link.startswith('/wiki/'):
                 return 'https://en.wikipedia.org' + link
 
@@ -54,7 +57,7 @@ def main():
     print("The visited pages repeat at:", next_url[30:])
     
     # Exporting to a text file
-    with open("wikipedia_chain_data.txt", "a") as file:
+    with open("wikipedia_loop_data.txt", "a") as file:
         date = datetime.now().strftime("%Y-%m-%d")
         file.write(f"{date}; {start_url[30:]}; {len(visited)}; {current_url[30:]}\n")
 
