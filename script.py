@@ -3,43 +3,50 @@ from bs4 import BeautifulSoup
 import re
 from datetime import datetime
 
-lan = "de" # can be "en" or "de"
+lan = "en" # tested for "en" or "de"
 
 def get_first_valid_link(url, visited):
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    # Find the first paragraph
-    p_tags = soup.find_all('p')
-    for p in p_tags:
-        if p.find_parent('table'):
-            # Skip paragraphs inside tables
+    # Get all the relevant elements in the order they appear
+    elements = soup.find_all(['p', 'li'])
+    
+    for element in elements:
+        if element.find_parent('table'):
+            # Skip elements inside tables
             continue
 
-        # Find all links within the paragraph
-        links = p.find_all('a', href=True)
-
-        for a_tag in links:
-            # Check if the link is within brackets
-            preceding_text = str(p)[:str(p).find(a_tag['href'])]
-            open_brackets = preceding_text.count('(')
-            close_brackets = preceding_text.count(')')
-
-            if open_brackets > close_brackets:
-                # Link is within brackets, skip it
-                continue
-
-            link = a_tag['href']
-            if 'Help:IPA' in link:
-                continue
-            
-            if link.startswith('/wiki/'):
-                return 'https://' + lan + '.wikipedia.org' + link
+        first_link = find_first_link_in_element(element)
+        if first_link:
+            return first_link
 
     return None
 
+def find_first_link_in_element(element):
+    # Find all links within the element
+    links = element.find_all('a', href=True)
 
+    for a_tag in links:
+        # Check if the link is within round or square brackets
+        preceding_text = str(element)[:str(element).find(a_tag['href'])]
+        open_round_brackets = preceding_text.count('(')
+        close_round_brackets = preceding_text.count(')')
+        open_square_brackets = preceding_text.count('[')
+        close_square_brackets = preceding_text.count(']')
 
+        if open_round_brackets > close_round_brackets or open_square_brackets > close_square_brackets:
+            # Link is within brackets, skip it
+            continue
+
+        link = a_tag['href']
+        if 'Help:IPA' in link:
+            continue
+        
+        if link.startswith('/wiki/'):
+            return 'https://' + lan + '.wikipedia.org' + link
+
+    return None
 
 def main():
     start_url = input("Enter a Wikipedia URL: ")
