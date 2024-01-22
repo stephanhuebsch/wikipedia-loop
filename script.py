@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import re
 from datetime import datetime
 
+lan = "de" # can be "en" or "de"
+
 def get_first_valid_link(url, visited):
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -13,25 +15,29 @@ def get_first_valid_link(url, visited):
         if p.find_parent('table'):
             # Skip paragraphs inside tables
             continue
-    
+
         # Find all links within the paragraph
         links = p.find_all('a', href=True)
 
         for a_tag in links:
             # Check if the link is within brackets
             preceding_text = str(p)[:str(p).find(a_tag['href'])]
-            if '(' in preceding_text and ')' not in preceding_text:
+            open_brackets = preceding_text.count('(')
+            close_brackets = preceding_text.count(')')
+
+            if open_brackets > close_brackets:
                 # Link is within brackets, skip it
                 continue
 
             link = a_tag['href']
             if 'Help:IPA' in link:
-                continue 
+                continue
             
             if link.startswith('/wiki/'):
-                return 'https://en.wikipedia.org' + link
+                return 'https://' + lan + '.wikipedia.org' + link
 
     return None
+
 
 
 
@@ -59,7 +65,7 @@ def main():
     # Exporting to a text file
     with open("wikipedia_loop_data.txt", "a") as file:
         date = datetime.now().strftime("%Y-%m-%d")
-        file.write(f"{date}; {start_url[30:]}; {len(visited)}; {current_url[30:]}\n")
+        file.write(f"{date}; {lan}; {start_url[30:]}; {len(visited)}; {current_url[30:]}\n")
 
 if __name__ == "__main__":
     main()
