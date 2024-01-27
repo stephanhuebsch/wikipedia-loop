@@ -10,7 +10,8 @@ def get_first_valid_link(url, visited):
     soup = BeautifulSoup(response.text, 'html.parser')
 
     # Get all the relevant elements in the order they appear
-    elements = soup.find_all(['p', 'li'])
+    #elements = soup.find_all(['p', 'li'])
+    elements = soup.find_all(['p'])
     
     for element in elements:
         if element.find_parent('table'):
